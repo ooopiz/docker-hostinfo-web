@@ -1,8 +1,12 @@
 # docker-hostinfo-web
+[![Pulls](https://badgen.net/docker/pulls/loopbai/hostinfo-in-web?icon=docker)](https://hub.docker.com/r/loopbai/hostinfo-in-web)
 
 The project is a web service running in docker, I use it to test high availability or loading balance architecture.🔨🔨🔨
 
 When you send http request to the container, it will show container host information.
+
+## Demo
+![image](https://raw.githubusercontent.com/loopbai/docker-hostinfo-web/master/docs/images/demo.jpg)
 
 ## Usage
 
