@@ -1,0 +1,56 @@
+<html>
+<head>
+  <title>Host information</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    table {margin: 2em;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <td>Items</td>
+          <td>Values</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Hostname</th>
+          <td>{{ .Hostname }}</td>
+        </tr>
+        <tr>
+          <th>Timestamp</th>
+          <td>{{ .Timestamp }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-dark">
+    <thead>
+      <tr>
+        <td>Interface</td>
+        <td>Address</td>
+      </tr>
+    </thead>
+      <tbody>
+        {{ range .Networks }}
+          <tr>
+            <th>{{ .IfaceName }}</th>
+            <td>
+              <ul>
+              {{ range $key, $value := .IfaceAddrs }}
+              <li>{{ $value }}</li>
+              {{ end  }}
+              </ul>
+            </td>
+          </tr>
+        {{ end  }}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
+</body>
+</html>

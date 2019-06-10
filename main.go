@@ -1,49 +1,70 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
 	"log"
 	"net"
 	"net/http"
-	"strings"
+	"os"
+	"time"
 )
+
+type NetworkInfo struct {
+	IfaceName  string
+	IfaceAddrs []string
+}
+
+func getHostname() string {
+	hostname, _ := os.Hostname()
+	return hostname
+}
+
+func getNetworks() []NetworkInfo {
+	var networkInfos []NetworkInfo
+
+	interfaces, _ := net.Interfaces()
+	for _, i := range interfaces {
+		byNameInterface, _ := net.InterfaceByName(i.Name)
+		addresses, _ := byNameInterface.Addrs()
+		var addrs []string
+		for _, v := range addresses {
+			addrs = append(addrs, v.String())
+		}
+		if addrs != nil {
+			networkInfos = append(networkInfos, NetworkInfo{IfaceName: i.Name, IfaceAddrs: addrs})
+		}
+	}
+	return networkInfos
+}
 
 func showHostInfo(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	fmt.Println(r.Form)
-	fmt.Println("path", r.URL.Path)
-	fmt.Println("scheme", r.URL.Scheme)
-	fmt.Println(r.Form["url_long"])
-	for k, v := range r.Form {
-		fmt.Println("key:", k)
-		fmt.Println("val:", strings.Join(v, ""))
+	log.Println("path", r.URL.Path)
+
+	type HostInfo struct {
+		Hostname  string
+		Timestamp time.Time
+		Networks  []NetworkInfo
 	}
 
-	var addrInfo string
-	ifaces, _ := net.Interfaces()
-	// handle err
-	for _, i := range ifaces {
-		addrs, _ := i.Addrs()
-		// handle err
-		for _, addr := range addrs {
-			var ip net.IP
-			switch v := addr.(type) {
-			case *net.IPNet:
-				ip = v.IP
-			case *net.IPAddr:
-				ip = v.IP
-			}
-			// process IP address
-			addrInfo = addrInfo + fmt.Sprintf("%s", ip) + "\n"
-		}
+	items := HostInfo{
+		Hostname:  getHostname(),
+		Timestamp: time.Now(),
+		Networks:  getNetworks(),
 	}
+	//log.Println(items)
 
-	fmt.Fprint(w, "<div>"+strings.Replace(addrInfo, "\n", "<br>", -1)+"</div>")
+	tmpl, err := template.ParseFiles("./template.html")
+	if err != nil {
+		log.Fatal("Parse Template Error ...")
+	}
+	tmpl.Execute(w, items)
 }
 
 func main() {
-	http.HandleFunc("/", showHostInfo)
-	err := http.ListenAndServe(":9090", nil)
+	handler := http.NewServeMux()
+	handler.HandleFunc("/", showHostInfo)
+	err := http.ListenAndServe(":9090", handler)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
