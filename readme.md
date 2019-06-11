@@ -1,5 +1,5 @@
 # docker-hostinfo-web
-[![Last Tag](https://badgen.net/github/tag/loopbai/docker-hostinfo-web)](https://hub.docker.com/r/loopbai/hostinfo-in-web)
+[![Last Tag](https://badgen.net/github/tag/loopbai/docker-hostinfo-web)](https://github.com/loopbai/docker-hostinfo-web)
 [![Pulls](https://badgen.net/docker/pulls/loopbai/hostinfo-in-web)](https://hub.docker.com/r/loopbai/hostinfo-in-web)
 
 The project is a web service running in docker, I use it to test high availability or loading balance architecture.🔨🔨🔨
